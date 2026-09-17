@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Maaf ya 🥺</title>
+<style>
+  :root{
+    --pink: #ff8fab;
+    --pink-dark: #ff4d7e;
+    --cream: #fff0f3;
+    --purple: #b185db;
+  }
+  @media (prefers-color-scheme: dark){
+    body{ background: linear-gradient(135deg,#2a1a2f,#1a1030); }
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg,#ffe3ec,#ffd1e0 40%,#fbc2eb);
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  .heart{
+    position:absolute;
+    top:-10%;
+    font-size:20px;
+    opacity:0.8;
+    animation: fall linear infinite;
+    pointer-events:none;
+    user-select:none;
+  }
+
+  .music-btn{
+    position:absolute;
+    top:16px;
+    right:16px;
+    z-index:5;
+    background: rgba(255,255,255,0.8);
+    border:none;
+    border-radius:50%;
+    width:46px;
+    height:46px;
+    font-size:20px;
+    cursor:pointer;
+    box-shadow: 0 6px 16px rgba(255,77,126,0.25);
+    transition: transform 0.15s ease;
+  }
+  .music-btn:hover{ transform: scale(1.1); }
+  .music-btn.playing{ animation: spin 3s linear infinite; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  @keyframes fall{
+    to{ transform: translateY(110vh) rotate(360deg); opacity:0.2; }
+  }
+
+  .card{
+    position:relative;
+    z-index:2;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 28px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 90%;
+    text-align:center;
+    box-shadow: 0 20px 60px rgba(255,77,126,0.25);
+    animation: pop-in 0.8s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes pop-in{
+    from{ transform: scale(0.6); opacity:0; }
+    to{ transform: scale(1); opacity:1; }
+  }
+
+  .bear{
+    font-size: 90px;
+    animation: bounce 2.2s ease-in-out infinite;
+    display:inline-block;
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.15));
+  }
+  @keyframes bounce{
+    0%,100%{ transform: translateY(0) rotate(-3deg); }
+    50%{ transform: translateY(-14px) rotate(3deg); }
+  }
+
+  .cat-bandage{
+    position:relative;
+    display:inline-block;
+  }
+  .bandaid{
+    position:absolute;
+    top:6px;
+    right:8px;
+    font-size:26px;
+    transform: rotate(15deg);
+  }
+
+  .deco-row{
+    font-size:22px;
+    margin-top:-6px;
+    letter-spacing:6px;
+  }
+
+  h1{
+    color: var(--pink-dark);
+    font-size: 26px;
+    margin: 14px 0 6px;
+  }
+  p{
+    color:#6b4a58;
+    line-height:1.6;
+    font-size:15.5px;
+    margin: 10px 0 22px;
+  }
+
+  .btn-row{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  button{
+    border:none;
+    padding: 13px 26px;
+    border-radius: 999px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  #yes{
+    background: linear-gradient(135deg,var(--pink),var(--pink-dark));
+    color:white;
+    box-shadow: 0 8px 20px rgba(255,77,126,0.4);
+  }
+  #yes:hover{ transform: scale(1.07); }
+
+  #no{
+    background: #f1eef0;
+    color:#8a7580;
+  }
+
+  .result{
+    display:none;
+    animation: pop-in 0.6s ease;
+  }
+
+  .sorry-word{
+    display:inline-block;
+    animation: wiggle 1.8s ease-in-out infinite;
+  }
+  @keyframes wiggle{
+    0%,100%{ transform: rotate(-2deg); }
+    50%{ transform: rotate(2deg); }
+  }
+
+  .progress-wrap{
+    margin-top:18px;
+    font-size:13px;
+    color:#a98a98;
+  }
+</style>
+</head>
+<body>
+
+<button class="music-btn" id="musicBtn" title="Putar musik">🎵</button>
+
+<div class="card" id="card">
+  <div class="cat-bandage">
+    <span class="bear">🐱</span>
+    <span class="bandaid">🩹</span>
+  </div>
+  <div class="deco-row">🌷🍦🌸</div>
+  <h1 id="title"><span class="sorry-word">Maaf ya, babyyy...</span></h1>
+  <p id="msg">
+    Waktu kamu cerita soal jatuh dari tangga, aku malah ketawa,
+    padahal aku gak tau itu parah. aku ngerasa jahat banget udah
+    ketawain kamu di saat kamu lagi sakit. Maaf ya baby 🥺<br><br>
+    Boleh gak aku diberi kesempatan buat gantiin ketawa itu jadi
+    senyum kamu lagi? Es krim kesukaanmu udah standby 🍦
+  </p>
+
+  <div id="question">
+    <div class="btn-row">
+      <button id="yes">Boleh, aku maafin 🥰</button>
+      <button id="no">Belum mau 😤</button>
+    </div>
+    <div class="progress-wrap" id="tries"></div>
+  </div>
+
+  <div class="result" id="result">
+    <div style="font-size:60px;">🐱🌸🍦</div>
+    <h1>Makasih sayangkuu!!</h1>
+    <p>Aku janji bakal lebih hati-hati jagain perasaan kamu.
+    mwehehehhe es krimnyaa online dulu yaa, blom bisa ngasih eskrim oflline. Makasih udah mau maafin aku 🫶</p>
+  </div>
+</div>
+
+<script>
+  const hearts = ["❤️","💖","💗","💕","💓","🌸","🐱","🍦","🌷"];
+  for(let i=0;i<28;i++){
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+    h.style.left = Math.random()*100 + "vw";
+    h.style.animationDuration = (5 + Math.random()*6) + "s";
+    h.style.animationDelay = (Math.random()*5) + "s";
+    h.style.fontSize = (14 + Math.random()*16) + "px";
+    document.body.appendChild(h);
+  }
+
+  const excuses = [
+    "Yah masa gitu... coba klik lagi dong 🥺",
+    "Aku beneran nyesel, plis... 🙏",
+    "Boneka beruangnya udah nunggu peluk nih 🐻",
+    "Satu kesempatan lagi ya sayang? 💗"
+  ];
+  let tryCount = 0;
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const triesEl = document.getElementById("tries");
+  const question = document.getElementById("question");
+  const result = document.getElementById("result");
+  const title = document.getElementById("title");
+  const msg = document.getElementById("msg");
+
+  noBtn.addEventListener("click", () => {
+    tryCount++;
+    if(tryCount <= excuses.length){
+      triesEl.textContent = excuses[tryCount-1];
+    } else {
+      triesEl.textContent = "Aku gak akan nyerah kok 🥲";
+    }
+    // tombol "boleh" makin gede tiap kali ditolak biar susah di-skip :)
+    const scale = Math.min(1 + tryCount*0.15, 2.2);
+    yesBtn.style.transform = `scale(${scale})`;
+  });
+
+  yesBtn.addEventListener("click", () => {
+    question.style.display = "none";
+    result.style.display = "block";
+    document.querySelector(".bear").textContent = "🥰";
+    if(!isPlaying) toggleMusic();
+  });
+
+  // --- Musik lembut, disintesis sendiri (bukan lagu berhak cipta) ---
+  let audioCtx = null;
+  let isPlaying = false;
+  let melodyTimer = null;
+  const musicBtn = document.getElementById("musicBtn");
+
+  // Melodi sederhana & lembut (nada C major pentatonic), diulang-ulang
+  const melody = [
+    {n:523.25, d:0.45}, {n:587.33, d:0.45}, {n:659.25, d:0.45}, {n:523.25, d:0.45},
+    {n:659.25, d:0.45}, {n:783.99, d:0.6},  {n:659.25, d:0.45}, {n:587.33, d:0.6},
+    {n:523.25, d:0.45}, {n:440.00, d:0.45}, {n:493.88, d:0.45}, {n:523.25, d:0.9}
+  ];
+
+  function playNote(freq, duration, startTime){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.18, startTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.05);
+  }
+
+  function scheduleLoop(){
+    let t = audioCtx.currentTime + 0.1;
+    melody.forEach(note => {
+      playNote(note.n, note.d, t);
+      t += note.d;
+    });
+    const totalDur = melody.reduce((a,b)=>a+b.d,0);
+    melodyTimer = setTimeout(scheduleLoop, totalDur * 1000);
+  }
+
+  function toggleMusic(){
+    if(!audioCtx){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if(isPlaying){
+      clearTimeout(melodyTimer);
+      isPlaying = false;
+      musicBtn.classList.remove("playing");
+      musicBtn.textContent = "🎵";
+    } else {
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      scheduleLoop();
+      isPlaying = true;
+      musicBtn.classList.add("playing");
+      musicBtn.textContent = "🔇";
+    }
+  }
+
+  musicBtn.addEventListener("click", toggleMusic);
+</script>
+
+</body>
+</html>
